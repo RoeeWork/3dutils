@@ -31,21 +31,19 @@ void init_window(struct window_info *info) {
 	info->win_height = DisplayHeight(info->display, info->screen_num) /3;
 	info->win_x = 0;
 	info->win_y = 0;
-	info->win_border_size = 1;
+	info->win_border_size = 2;
 }
-Window CreateWindow(struct window_info info) {
-	
-	int win_border_size = 2;
-	Window win = XCreateSimpleWindow(info.display,
-							  RootWindow(info.display, info.screen_num),
-							  info.win_x, info.win_y,
-							  info.win_width, info.win_height,
-							  info.win_border_size,
-							  BlackPixel(info.display, info.screen_num),
-							  WhitePixel(info.display, info.screen_num)
+Window CreateWindow(struct window_info* info) {
+	Window win = XCreateSimpleWindow(info->display,
+							  RootWindow(info->display, info->screen_num),
+							  info->win_x, info->win_y,
+							  info->win_width, info->win_height,
+							  info->win_border_size,
+							  BlackPixel(info->display, info->screen_num),
+							  WhitePixel(info->display, info->screen_num)
 			);
-	XMapWindow(info.display, win);
-	XSync(info.display, win);
+	XMapWindow(info->display, win);
+	XSync(info->display, False);
 	return win;
 }
 int main(int argc, char* argv[]) {
@@ -53,7 +51,7 @@ int main(int argc, char* argv[]) {
 	struct window_info win_info;
 	init_window(&win_info);
 
-	win = CreateWindow(win_info);
+	win = CreateWindow(&win_info);
 	sleep(4);
-	return -1;
+	return 0;
 }
