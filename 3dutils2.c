@@ -24,14 +24,14 @@ int main(int argc, char **argv) {
 	 Window parent;
 	 Window win;
 
-	 GC gc = DefaultGC(display, 0);
-
 	 XEvent event;
 
 	 char* disp_name;
 	 disp_name = getenv("DISPLAY");
 	 display = XOpenDisplay(disp_name);
 	 parent = DefaultRootWindow(display);
+
+	 GC gc = DefaultGC(display, 0);
 
      win = XCreateSimpleWindow(display, parent,
 			 0, 0,
@@ -46,9 +46,7 @@ int main(int argc, char **argv) {
 		XNextEvent(display, &event);
 		if (event.type == Expose) {
 	 		XDrawString(display, win, gc, 10, 20, "press key pls", 20);
-			// TODO: fix gc for drawing
-			// WARNING: THIS SEG FAULTS
-			// 		XDrawRectangle(display, win, gc, 20, 30, 40, 40 );
+			XDrawRectangle(display, win, gc, 20, 30, 40, 40 );
 		}
 		if (event.type == KeyPress) {
 			XCloseDisplay(display);
