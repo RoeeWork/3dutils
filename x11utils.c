@@ -1,23 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-/*
-functions:
-	- XOpenDisplay
-	- XDisplayName
-	- XRootWindow
-	- XCreateSimpleWindow
-	- XMapWindow
-	- DefaultRootWindow
-	- BlackPixel
-	- WhitePixel
-	- XSelectInput
-	- XNextEvent
-	- XEvent
-*/
+#include "x11utils.h"
 
 Display *disp;
 Window win;
@@ -25,13 +13,6 @@ GC gc;
 
 Window root;
 int defaultScreen;
-
-#define X 0
-#define Y 0
-#define WIDTH 400
-#define HEIGHT 400
-#define BORDER_WIDTH 2
-#define LINE_WIDTH 4
 
 unsigned long _RGB(int r,int g, int b)
 {
@@ -76,25 +57,31 @@ GC create_GC(int line_width) {
 	return XCreateGC(disp, win, valmask, &gcvals);
 }
 
+void draw_square(int x, int y) {
+		XClearWindow(disp,win);
+		XFillRectangle(disp, win, gc, x, y, 40, 40 );
+		XFlush(disp);
+}
+
 void run(GC gc) {
-	XEvent event;
-	//XSelectInput(disp, win, KeyPressMask | ExposureMask);
-
+	int i = 0;
 	for(;;) {
-		XNextEvent(disp, &event);
-		if (event.type == Expose) {
-			XSetForeground(disp, gc, _RGB(255,0,0));
-			XDrawString(disp, win, gc, 10, 20, "press key pls", 20);
-			XFillRectangle(disp, win, gc, 20, 20, 40, 40 );
-		}
-		if (event.type == KeyPress) {
-			XUnmapWindow(disp, win);
-			XDestroyWindow(disp, win);
-			XFreeGC(disp, gc);
+		while(XPending(disp)) {
+			XEvent event;
+			XNextEvent(disp, &event);
+			if (event.type == KeyPress) {
+				XUnmapWindow(disp, win);
+				XDestroyWindow(disp, win);
+				XFreeGC(disp, gc);
 
-			XCloseDisplay(disp);
-			exit(0);
+				XCloseDisplay(disp);
+				exit(0);
+			}
 		}
+		++i;
+		draw_square(i, 20);
+		usleep(16000);
+		printf("i=%d\n", i);
 	 }
 }
 
@@ -108,6 +95,7 @@ int main() {
 	win = create_window(X, Y, WIDTH, HEIGHT, BORDER_WIDTH);
 	gc = create_GC(LINE_WIDTH);
 	
+	XSetForeground(disp, gc, _RGB(255,0,0));
 	XMapWindow(disp, win);
 	run(gc);
 
