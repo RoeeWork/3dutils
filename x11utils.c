@@ -61,6 +61,11 @@ void draw_square(int x, int y) {
 		XFillRectangle(disp, win, gc, x, y, 10, 10 );
 		XFlush(disp);
 }
+
+void draw_line(int x1, int y1, int x2, int y2) {
+	XDrawLine(disp, win, gc, x1, y1, x2, y2);
+	XFlush(disp);
+}
 void handle_event() {
 	while(XPending(disp)) {
 		XEvent event;

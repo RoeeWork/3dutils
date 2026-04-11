@@ -27,13 +27,24 @@ struct Point3d project(struct Point3d p) {
 struct Point3d points[8] = {
 	{0.25, 0.25, 	0.25},
 	{-0.25, 0.25, 	0.25},
-	{0.25, -0.25, 	0.25},
 	{-0.25, -0.25, 	0.25},
+	{0.25, -0.25, 	0.25},
 
 	{0.25, 0.25, 	-0.25},
 	{-0.25, 0.25, 	-0.25},
-	{0.25, -0.25, 	-0.25},
-	{-0.25, -0.25, 	-0.25}
+	{-0.25, -0.25, 	-0.25},
+	{0.25, -0.25, 	-0.25}
+};
+
+int vp[2][4] = {
+	{0, 1, 2, 3},
+	{4, 5, 6, 7}
+};
+int vs[4][2] = {
+	{0, 4},
+	{1, 5},
+	{2, 6},
+	{3, 7}
 };
 
 struct Point3d translate_z( struct Point3d p, float dz) {
@@ -76,6 +87,22 @@ void frame() {
 		struct Point3d pn = npoints[j];
 		draw_square(pn.x - 5, pn.y - 5);
 		fprintf(stdout, "points[%d]: (%f, %f, %f)\n", j, pn.x, pn.y, pn.z);
+	}
+	for (int k = 0; k < 2; k++) {
+		for (int s = 0; s < 4; s++) {
+			int a = vp[k][s];
+			int b = vp[k][(s+1)%4];
+			draw_line(npoints[a].x, npoints[a].y, 
+					npoints[b].x, npoints[b].y);
+		}
+	}
+	for (int c = 0; c < 4; c++) {
+		for (int d = 0; d < 2; d++) {
+			int g = vs[c][d];
+			int n = vs[c][(d+1)%2];
+			draw_line(npoints[g].x, npoints[g].y, 
+					npoints[n].x, npoints[n].y);
+		}
 	}
 	usleep((1000/FPS) * 1000);
 }

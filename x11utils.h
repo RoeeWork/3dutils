@@ -28,3 +28,4 @@ GC create_GC(int line_width);
 void draw_square(int x, int y);
 void handle_event();
 void init_xlib();
+void draw_line(int x1, int y1, int x2, int y2);
