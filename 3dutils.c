@@ -1,10 +1,5 @@
 #include "x11utils.h"
 
-struct Point {
-	float x;
-	float y;
-};
-
 struct Point3d {
 	float x;
 	float y;
