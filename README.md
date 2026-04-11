@@ -4,4 +4,4 @@ i made it after finding a formula from this video:
 https://www.youtube.com/watch?v=qjWkNZ0SXfo&t=384s
 
 ## Model
-i got the monkey model from .cameron:poly.pizza/m/kD8hdFa32e
+i got the monkey model from .cameron: https://poly.pizza/m/kD8hdFa32e
