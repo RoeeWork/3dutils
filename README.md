@@ -5,3 +5,4 @@ https://www.youtube.com/watch?v=qjWkNZ0SXfo&t=384s
 
 ## Model
 i got the monkey model from .cameron: https://poly.pizza/m/kD8hdFa32e
+<img width="898" height="952" alt="image" src="https://github.com/user-attachments/assets/e6636e4f-891b-4492-a0d8-a181f244b51e" />
