@@ -58,34 +58,25 @@ GC create_GC(int line_width) {
 }
 
 void draw_square(int x, int y) {
-		XClearWindow(disp,win);
-		XFillRectangle(disp, win, gc, x, y, 40, 40 );
+		XFillRectangle(disp, win, gc, x, y, 10, 10 );
 		XFlush(disp);
 }
+void handle_event() {
+	while(XPending(disp)) {
+		XEvent event;
+		XNextEvent(disp, &event);
+		if (event.type == KeyPress) {
+			XUnmapWindow(disp, win);
+			XDestroyWindow(disp, win);
+			XFreeGC(disp, gc);
 
-void run(GC gc) {
-	int i = 0;
-	for(;;) {
-		while(XPending(disp)) {
-			XEvent event;
-			XNextEvent(disp, &event);
-			if (event.type == KeyPress) {
-				XUnmapWindow(disp, win);
-				XDestroyWindow(disp, win);
-				XFreeGC(disp, gc);
-
-				XCloseDisplay(disp);
-				exit(0);
-			}
+			XCloseDisplay(disp);
+			exit(0);
 		}
-		++i;
-		draw_square(i, 20);
-		usleep(16000);
-		printf("i=%d\n", i);
-	 }
+	}
 }
 
-int main() {
+void init_xlib() {
 	disp = XOpenDisplay(0);
 	if (disp == NULL) {
 		exit(1);
@@ -95,9 +86,6 @@ int main() {
 	win = create_window(X, Y, WIDTH, HEIGHT, BORDER_WIDTH);
 	gc = create_GC(LINE_WIDTH);
 	
-	XSetForeground(disp, gc, _RGB(255,0,0));
+	XSetForeground(disp, gc, _RGB(0,255,0));
 	XMapWindow(disp, win);
-	run(gc);
-
-	return 1;
 }
