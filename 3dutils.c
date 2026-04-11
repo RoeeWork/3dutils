@@ -1,10 +1,8 @@
 #include "x11utils.h"
+#include "model.h"
 
-struct Point3d {
-	float x;
-	float y;
-	float z;
-};
+int point_count = sizeof(points) / sizeof(points[0]);
+int edge_count  = sizeof(edges)  / sizeof(edges[0]);
 
 struct Point3d screen(struct Point3d p) { 
 	struct Point3d pn;
@@ -24,17 +22,17 @@ struct Point3d project(struct Point3d p) {
 }
 
 
-struct Point3d points[8] = {
-	{0.25, 0.25, 	0.25},
-	{-0.25, 0.25, 	0.25},
-	{-0.25, -0.25, 	0.25},
-	{0.25, -0.25, 	0.25},
-
-	{0.25, 0.25, 	-0.25},
-	{-0.25, 0.25, 	-0.25},
-	{-0.25, -0.25, 	-0.25},
-	{0.25, -0.25, 	-0.25}
-};
+//struct Point3d points[8] = {
+//	{0.25, 0.25, 	0.25},
+//	{-0.25, 0.25, 	0.25},
+//	{-0.25, -0.25, 	0.25},
+//	{0.25, -0.25, 	0.25},
+//
+//	{0.25, 0.25, 	-0.25},
+//	{-0.25, 0.25, 	-0.25},
+//	{-0.25, -0.25, 	-0.25},
+//	{0.25, -0.25, 	-0.25}
+//};
 
 int vp[2][4] = {
 	{0, 1, 2, 3},
@@ -49,6 +47,14 @@ int vs[4][2] = {
 
 struct Point3d translate_z( struct Point3d p, float dz) {
 	struct Point3d n = {p.x, p.y, p.z += dz};
+	return n;
+}
+struct Point3d translate( struct Point3d p, float dx, float dy, float dz) {
+	struct Point3d n = {p.x + dx, p.y + dy, p.z += dz};
+	return n;
+}
+struct Point3d translate_y( struct Point3d p, float dy) {
+	struct Point3d n = {p.x, p.y += dy, p.z};
 	return n;
 }
 
@@ -71,38 +77,31 @@ double angle = 0;
 void frame() {
 	handle_event();
 
-	struct Point3d npoints[8];
+	struct Point3d npoints[point_count];
 
 	//dz += v*dt;
 	angle += 3.14*dt;
-	for (int i = 0; i < 8; i++) {
-		npoints[i] = screen(project(translate_z(rotate_xz(points[i], angle), dz)));
+	for (int i = 0; i < point_count; i++) {
+		npoints[i] = screen(project(translate(rotate_xz(points[i], angle), 0, -0.5, dz)));
+		fprintf(stdout, "point[%d]: (%f, %f, %f)\n", i, npoints[i].x,  npoints[i].y, npoints[i].z);
 	}
 
-	fprintf(stdout, "dt = %f\n", dt);
-	fprintf(stdout, "dz = %f*%f = %f\n",v, dt, dz);
+
+//	for (int j = 0; j < point_count; j++) {
+//		struct Point3d pn = npoints[j];
+//		draw_square(pn.x - 5, pn.y - 5);
+//		fprintf(stdout, "points[%d]: (%f, %f, %f)\n", j, pn.x, pn.y, pn.z);
+//	}
 
 	XClearWindow(disp,win);
-	for (int j = 0; j < 8; j++) {
-		struct Point3d pn = npoints[j];
-		draw_square(pn.x - 5, pn.y - 5);
-		fprintf(stdout, "points[%d]: (%f, %f, %f)\n", j, pn.x, pn.y, pn.z);
-	}
-	for (int k = 0; k < 2; k++) {
-		for (int s = 0; s < 4; s++) {
-			int a = vp[k][s];
-			int b = vp[k][(s+1)%4];
-			draw_line(npoints[a].x, npoints[a].y, 
-					npoints[b].x, npoints[b].y);
-		}
-	}
-	for (int c = 0; c < 4; c++) {
-		for (int d = 0; d < 2; d++) {
-			int g = vs[c][d];
-			int n = vs[c][(d+1)%2];
-			draw_line(npoints[g].x, npoints[g].y, 
-					npoints[n].x, npoints[n].y);
-		}
+	for (int i = 0; i < edge_count; i++) {
+		int a = edges[i][0];
+		int b = edges[i][1];
+
+		draw_line(
+			npoints[a].x, npoints[a].y,
+			npoints[b].x, npoints[b].y
+		);
 	}
 	usleep((1000/FPS) * 1000);
 }

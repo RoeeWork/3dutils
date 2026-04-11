@@ -11,7 +11,7 @@
 #define WIDTH 952
 #define HEIGHT 1012
 #define BORDER_WIDTH 2
-#define LINE_WIDTH 4
+#define LINE_WIDTH 1
 
 extern Display *disp;
 extern Window win;
@@ -20,7 +20,6 @@ extern GC gc;
 extern Window root;
 extern int defaultScreen;
 
-struct Point3d;
 
 unsigned long _RGB(int r,int g, int b);
 Window create_window(int x, int y, int w, int h, int b);
